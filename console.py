@@ -115,16 +115,31 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
+        arg = args.split()
         if not args:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+        if arg[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
-        print(new_instance.id)
-        storage.save()
+        else:
+            """create dictionary from list of strings"""
+            new_dict = dict()
+
+            for item in arg[1:]:
+                key = item.split("=")[0]
+                value = item.split("=")[1]
+                if value[0] == '"':
+                    value = value.strip('"').replace("_", " ")
+                elif '.' in value:
+                    value = float(value)
+                elif value.isnumeric():
+                    value = int(value)
+                new_dict[key] = value
+            object = eval("{}()".format(arg[0]))
+            object.__dict__.update(new_dict)
+            object.save()
+            print("{}".format(object.id))
 
     def help_create(self):
         """ Help information for the create method """
@@ -319,6 +334,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
