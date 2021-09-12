@@ -9,6 +9,8 @@ from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
+
+
 class DBStorage:
     """class  dbstorage"""
     __engine = None
@@ -28,9 +30,9 @@ class DBStorage:
             Base.meta.drop_all(bind=self.__engine, checkfirst=True)
 
     def all(self, cls=None):
-        """query on the current database session 
+        """query on the current database session
         (self.__session) all objects depending of the class name
-        if cls=None, query all types of objects 
+        if cls=None, query all types of objects
         """
         if cls is not None and type(cls) == str:
             objects = self.__session.query(cls).all()
@@ -43,7 +45,7 @@ class DBStorage:
             objects.extend(self.__session.query(Place).all())
             objects.extend(self.__session.query(Review).all())
             objects.extend(self.__session.query(Amenity).all())
-    
+
     def new(self, obj):
         """Add obj to the current database session."""
         self.__session.add(obj)
@@ -57,3 +59,6 @@ class DBStorage:
         if obj is not None:
             self.__session.delete(obj)
 
+    def close(self):
+        """"""
+        self.storage.close()
