@@ -3,14 +3,16 @@
 from flask import Flask
 from flask.templating import render_template
 from models import storage
+from models.state import State
 app = Flask(__name__)
 
 
 @app.route('/states_list', strict_slashes=False)
 def states():
-    state = storage.all("States").values()
+    state = storage.all(State).values()
+    state = sorted(state, key=lambda x: x.name)
     return render_template(
-        '6-number_odd_or_even.html', States=state)
+        '6-number_odd_or_even.html', State=state)
 
 
 @app.teardown_appcontext
